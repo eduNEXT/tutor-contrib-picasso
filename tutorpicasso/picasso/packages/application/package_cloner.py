@@ -1,0 +1,51 @@
+"""
+Package cloner process.
+"""
+
+from tutorpicasso.picasso.packages.domain.package_repository import PackageRepository
+from tutorpicasso.picasso.share.domain.package import Package
+from tutorpicasso.picasso.share.domain.package_domain import PackageDomain
+from tutorpicasso.picasso.share.domain.package_name import PackageName
+from tutorpicasso.picasso.share.domain.package_version import PackageVersion
+
+
+class PackageCloner:
+    """
+    Package cloner process.
+
+    This class is responsible for cloning a package using a given package repository.
+
+    Args:
+        repository (PackageRepository): The package repository used for cloning.
+
+    Attributes:
+        repository (PackageRepository): The package repository used for cloning.
+    """
+
+    def __init__(self, repository: PackageRepository) -> None:
+        self.repository = repository
+
+    def __call__(  # pylint: disable=too-many-arguments
+        self,
+        name: str,
+        version: str,
+        domain: str,
+        path: str,
+        extra: dict = None
+    ) -> None:  # pylint:disable=duplicate-code
+        """
+        Clone a package to the specified path.
+
+        Args:
+            name (str): The name of the package.
+            version (str): The version of the package.
+            domain (str): The domain of the package.
+            path (str): The path to clone the package.
+            extra (dict, optional): Extra metadata associated with the package. Defaults to None.
+        """
+        name = PackageName(name)
+        version = PackageVersion(version)
+        domain = PackageDomain(domain)
+        package = Package(name=name, version=version, domain=domain, extra=extra if extra else {})
+
+        self.repository.clone(package=package, path=path)

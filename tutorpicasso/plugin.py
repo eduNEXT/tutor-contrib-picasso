@@ -6,6 +6,7 @@ from glob import glob
 import click
 import importlib_resources
 from tutor import hooks
+from tutorpicasso.commands.cli import picasso
 
 from .__about__ import __version__
 
@@ -206,12 +207,11 @@ for path in glob(str(importlib_resources.files("tutorpicasso") / "patches" / "*"
 # group and then add it to CLI_COMMANDS:
 
 
-### @click.group()
-### def picasso() -> None:
-###     pass
-
-
-### hooks.Filters.CLI_COMMANDS.add_item(picasso)
+hooks.Filters.CLI_COMMANDS.add_items(
+    [
+        picasso,
+    ]
+)
 
 
 # Then, you would add subcommands directly to the Click group, for example:
