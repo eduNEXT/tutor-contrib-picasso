@@ -6,13 +6,18 @@ from glob import glob
 import click
 import importlib_resources
 from tutor import hooks
+from tutorpicasso.commands.cli import picasso
 
 from .__about__ import __version__
 
 ########################################
 # CONFIGURATION
 ########################################
-
+hooks.Filters.MOUNTED_DIRECTORIES.add_items(
+    [
+        ("openedx", r"eox-.*"),
+    ]
+)
 hooks.Filters.CONFIG_DEFAULTS.add_items(
     [
         # Add your new settings that have default values here.
@@ -205,6 +210,11 @@ for path in glob(str(importlib_resources.files("tutorpicasso") / "patches" / "*"
 # To define a command group for your plugin, you would define a Click
 # group and then add it to CLI_COMMANDS:
 
+hooks.Filters.CLI_COMMANDS.add_items(
+    [
+        picasso,
+    ]
+)
 
 ### @click.group()
 ### def picasso() -> None:
