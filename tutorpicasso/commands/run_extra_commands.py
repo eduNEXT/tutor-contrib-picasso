@@ -34,7 +34,7 @@ def validate_commands(commands: List[str]) -> None:
     all the commands are correct before executing them
 
     Args:
-        commands (list[str] | None): The commands sent through DISTRO_EXTRA_COMMANDS in config.yml
+        commands (list[str] | None): The commands sent through PICASSO_EXTRA_COMMANDS in config.yml
     """
     splitted_commands = [
         split_string(command, COMMAND_CHAINING_OPERATORS) for command in commands
