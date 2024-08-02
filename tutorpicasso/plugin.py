@@ -6,6 +6,7 @@ from glob import glob
 import click
 import importlib_resources
 from tutor import hooks
+
 from tutorpicasso.commands.cli import picasso
 
 from .__about__ import __version__

@@ -1,29 +1,34 @@
-
-import click
-import subprocess
-from tutor import config as tutor_config
 import re
+import subprocess
+
 # Was necessary to use this for compatibility with Python 3.8
 from typing import List
 
+import click
+from tutor import config as tutor_config
+
 COMMAND_CHAINING_OPERATORS = ["&&", "&", "||", "|", ";"]
 
+
 @click.command(name="run-extra-commands", help="Run tutor commands")
-def run_extra_commands():
+def run_extra_commands() -> None:
     """
     This command runs tutor commands defined in PICASSO_EXTRA_COMMANDS
     """
-    tutor_root = subprocess.check_output("tutor config printroot", shell=True).\
-        decode("utf-8").strip()
+    tutor_root = (
+        subprocess.check_output("tutor config printroot", shell=True)
+        .decode("utf-8")
+        .strip()
+    )
     config = tutor_config.load(tutor_root)
     picasso_extra_commands = config.get("PICASSO_EXTRA_COMMANDS", None)
     if picasso_extra_commands is not None:
         validate_commands(picasso_extra_commands)
         for command in picasso_extra_commands:
-                run_command(command)
+            run_command(command)
 
 
-def validate_commands(commands: List[str]):
+def validate_commands(commands: List[str]) -> None:
     """
     Takes all the extra commands sent through config.yml and verifies that
     all the commands are correct before executing them
@@ -34,7 +39,7 @@ def validate_commands(commands: List[str]):
     splitted_commands = [
         split_string(command, COMMAND_CHAINING_OPERATORS) for command in commands
     ]
-    flat_commands_array = sum(splitted_commands, [])
+    flat_commands_array: List[str] = sum(splitted_commands, [])
 
     invalid_commands = []
     misspelled_commands = []
@@ -47,17 +52,18 @@ def validate_commands(commands: List[str]):
 
         if invalid_commands or misspelled_commands:
             error_message = (
-            f"Found some issues with the commands:\n\n"
-            f"{'=> Invalid commands: ' if invalid_commands else ''}"
-            f"{', '.join(invalid_commands) if invalid_commands else ''}\n"
-            f"{'=> Misspelled commands: ' if misspelled_commands else ''}"
-            f"{', '.join(misspelled_commands) if misspelled_commands else ''}\n"
-            f"Take a look at the official Tutor commands: "
-            f"https://docs.tutor.edly.io/reference/cli/index.html"
+                f"Found some issues with the commands:\n\n"
+                f"{'=> Invalid commands: ' if invalid_commands else ''}"
+                f"{', '.join(invalid_commands) if invalid_commands else ''}\n"
+                f"{'=> Misspelled commands: ' if misspelled_commands else ''}"
+                f"{', '.join(misspelled_commands) if misspelled_commands else ''}\n"
+                f"Take a look at the official Tutor commands: "
+                f"https://docs.tutor.edly.io/reference/cli/index.html"
             )
             raise click.ClickException(error_message)
 
-def run_command(command: str):
+
+def run_command(command: str) -> None:
     """
     Run an extra command.
 
@@ -75,7 +81,7 @@ def run_command(command: str):
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
             text=True,
-            ) as process:
+        ) as process:
 
             # It is sent a 'y' to say 'yes' on overriding the existing folders
             stdout, stderr = process.communicate(input="y")
@@ -89,10 +95,10 @@ def run_command(command: str):
             click.echo(stdout)
 
     except subprocess.CalledProcessError as error:
-        raise click.ClickException(error)
+        raise click.ClickException(str(error))
 
 
-def find_tutor_misspelled(command: str):
+def find_tutor_misspelled(command: str) -> bool:
     """
     This function takes a command and looks if it has the word 'tutor' misspelled
 
@@ -102,10 +108,10 @@ def find_tutor_misspelled(command: str):
     Return:
         If its found the word 'tutor' misspelled is returned True
     """
-    return re.match(r"[tT](?:[oru]{3}|[oru]{2}[rR]|[oru]u?)", command)
+    return bool(re.match(r"[tT](?:[oru]{3}|[oru]{2}[rR]|[oru]u?)", command))
 
 
-def create_regex_from_array(arr: List[str]):
+def create_regex_from_array(arr: List[str]) -> re.Pattern[str]:
     """
     This functions compiles a new regex turning taking care of
     escaping special characters
@@ -121,7 +127,7 @@ def create_regex_from_array(arr: List[str]):
     return re.compile(regex_pattern)
 
 
-def split_string(string: str, split_by: List[str]):
+def split_string(string: str, split_by: List[str]) -> List[str]:
     """
     Takes a string that is wanted to be split according to some
     other strings received in a list
