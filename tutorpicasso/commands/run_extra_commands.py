@@ -2,7 +2,7 @@ import re
 import subprocess
 
 # Was necessary to use this for compatibility with Python 3.8
-from typing import List
+from typing import Any, List
 
 import click
 from tutor import config as tutor_config
@@ -20,15 +20,15 @@ def run_extra_commands() -> None:
         .decode("utf-8")
         .strip()
     )
-    config = tutor_config.load(tutor_root)
-    picasso_extra_commands = config.get("PICASSO_EXTRA_COMMANDS", None)
+    config: Any = tutor_config.load(tutor_root)
+    picasso_extra_commands: Any = config.get("PICASSO_EXTRA_COMMANDS", None)
     if picasso_extra_commands is not None:
         validate_commands(picasso_extra_commands)
         for command in picasso_extra_commands:
             run_command(command)
 
 
-def validate_commands(commands: List[str]) -> None:
+def validate_commands(commands: Any) -> None:
     """
     Takes all the extra commands sent through config.yml and verifies that
     all the commands are correct before executing them

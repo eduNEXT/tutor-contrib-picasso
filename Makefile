@@ -13,7 +13,7 @@ test-lint: ## Run code linting tests
 	pylint --errors-only --enable=unused-import,unused-argument --ignore=templates --ignore=docs/_ext ${SRC_DIRS}
 
 test-types: ## Run type checks.
-	mypy --exclude=templates --ignore-missing-imports --implicit-reexport ${SRC_DIRS}
+	mypy --exclude=templates --ignore-missing-imports --implicit-reexport --strict ${SRC_DIRS}
 
 format: ## Format code automatically
 	black $(BLACK_OPTS)

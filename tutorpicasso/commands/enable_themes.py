@@ -1,5 +1,6 @@
 import os
 import subprocess
+from typing import Any
 
 import click
 from tutor import config as tutor_config
@@ -18,7 +19,7 @@ def enable_themes() -> None:
         .decode("utf-8")
         .strip()
     )
-    config = tutor_config.load(tutor_root)
+    config: Any = tutor_config.load(tutor_root)
 
     if config.get("PICASSO_THEMES"):
         for theme in config["PICASSO_THEMES"]:
