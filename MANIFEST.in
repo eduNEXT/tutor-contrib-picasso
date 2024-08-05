@@ -1,2 +1,3 @@
 recursive-include tutorpicasso/patches *
 recursive-include tutorpicasso/templates *
+recursive-include tutorpicasso/commands *
