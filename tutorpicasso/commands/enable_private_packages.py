@@ -1,11 +1,11 @@
 import os
 import subprocess
-
 from typing import Any, Dict
-from packaging.version import Version
 
 import click
+from packaging.version import Version
 from tutor import config as tutor_config
+from tutor.__about__ import __version__ as tutor_version
 
 
 @click.command(name="enable-private-packages", help="Enable picasso private packages")
@@ -24,9 +24,6 @@ def enable_private_packages() -> None:
         .decode("utf-8")
         .strip()
     )
-    tutor_version = (
-        subprocess.check_output("tutor --version", shell=True).decode("utf-8").strip()
-    ).split()[-1]
     tutor_version_obj = Version(tutor_version)
     # Define Quince version as the method for installing private packages changes from this version
     quince_version_obj = Version("v17.0.0")

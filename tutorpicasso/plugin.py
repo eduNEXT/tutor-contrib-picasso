@@ -5,7 +5,9 @@ from glob import glob
 
 import click
 import importlib_resources
+from packaging.version import Version
 from tutor import hooks
+from tutor.__about__ import __version__ as tutor_version
 
 from tutorpicasso.commands.cli import picasso
 
@@ -14,11 +16,16 @@ from .__about__ import __version__
 ########################################
 # CONFIGURATION
 ########################################
-hooks.Filters.MOUNTED_DIRECTORIES.add_items(
-    [
-        ("openedx", r"eox-.*"),
-    ]
-)
+
+# Tutor introduces the MOUNTED_DIRECTORIES in the latest Palm version.
+latest_palm_version = "16.1.8"
+if Version(tutor_version) > Version(latest_palm_version):
+    hooks.Filters.MOUNTED_DIRECTORIES.add_items(
+        [
+            ("openedx", r"eox-.*"),
+        ]
+    )
+
 hooks.Filters.CONFIG_DEFAULTS.add_items(
     [
         # Add your new settings that have default values here.
