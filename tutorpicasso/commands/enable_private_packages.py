@@ -1,8 +1,8 @@
 import os
 import subprocess
 
-# Was necessary to use this for compatibility with Python 3.8
 from typing import Any, Dict
+from packaging.version import Version
 
 import click
 from tutor import config as tutor_config
@@ -21,11 +21,28 @@ def enable_private_packages() -> None:
     """
     tutor_root = (
         subprocess.check_output("tutor config printroot", shell=True)
-        .decode("utf-8")
-        .strip()
+        .decode("utf-8").strip()
     )
+    tutor_version = (
+        subprocess.check_output("tutor --version", shell=True)
+        .decode("utf-8").strip()
+    ).split()[-1]
+    tutor_version_obj = Version(tutor_version)
+    # Define Quince version as the method for installing private packages changes from this version
+    quince_version_obj = Version('v17.0.0')
+    # Use these specific paths as required by Tutor < Quince
+    private_requirements_root = f'{tutor_root}/env/build/openedx/requirements'
+    private_requirements_txt = f'{private_requirements_root}/private.txt'
     config = tutor_config.load(tutor_root)
     packages = get_picasso_packages(config)
+
+    # Create necessary files and directories if they don't exist
+    if not os.path.exists(private_requirements_root):
+        os.makedirs(private_requirements_root)
+    if not os.path.exists(private_requirements_txt) and tutor_version_obj < quince_version_obj:
+        with open(private_requirements_txt, 'w') as file:
+            file.write('')
+
     for package, info in packages.items():
         try:
             if not {"name", "repo", "version"}.issubset(info):
@@ -33,13 +50,18 @@ def enable_private_packages() -> None:
                     f"{package} is missing one of the required keys: 'name', 'repo', 'version'"
                 )
 
-            if os.path.isdir(f'{tutor_root}/{info["name"]}'):
-                subprocess.call(["rm", "-rf", f'{tutor_root}/{info["name"]}'])
+            if os.path.isdir(f'{private_requirements_root}/{info["name"]}'):
+                subprocess.call(["rm", "-rf", f'{private_requirements_root}/{info["name"]}'])
 
             subprocess.call(
-                ["git", "clone", "-b", info["version"], info["repo"]], cwd=tutor_root
+                ["git", "clone", "-b", info["version"], info["repo"]], cwd=private_requirements_root
             )
-            subprocess.call(["tutor", "mounts", "add", f'{tutor_root}/{info["name"]}'])
+
+            if tutor_version_obj < quince_version_obj:
+                echo_command = f'echo "-e ./{info["name"]}/" >> {private_requirements_txt}'
+                subprocess.call(echo_command, shell=True)
+            else:
+                subprocess.call(["tutor", "mounts", "add", f'{private_requirements_root}/{info["name"]}'])
 
         except KeyError as e:
             raise click.ClickException(str(e))
