@@ -31,7 +31,7 @@ def run_extra_commands() -> None:
     list(map(run_command, picasso_extra_commands))
 
 
-def validate_commands(commands: Any) -> None:
+def validate_commands(commands: Any) -> str:
     """
     Takes all the extra commands sent through config.yml and verifies that
     all the commands are correct before executing them
@@ -42,7 +42,7 @@ def validate_commands(commands: Any) -> None:
     splitted_commands = [
         split_string(command, COMMAND_CHAINING_OPERATORS) for command in commands
     ]
-    flat_commands_list: List[str] = chain.from_iterable(splitted_commands)
+    flat_commands_list: chain[str] = chain.from_iterable(splitted_commands)
 
     invalid_commands = []
     misspelled_commands = []
@@ -71,6 +71,8 @@ def validate_commands(commands: Any) -> None:
                 "Take a look at the official Tutor commands: "
                 "https://docs.tutor.edly.io/reference/cli/index.html"
             )
+            return error_message
+    return ""
 
 
 def run_command(command: str) -> None:
@@ -136,8 +138,8 @@ def create_regex_from_list(special_chars: List[str]) -> re.Pattern[str]:
     Return:
         A new compiled regex pattern that can be used for comparisons
     """
-    escaped_special_chars = list(map(re.escape, special_chars))
-    regex_pattern = "|".join(escaped_special_chars)
+    escaped_special_chars = list(map(re.escape, special_chars))  # type: ignore
+    regex_pattern = "|".join(escaped_special_chars)  # type: ignore
     return re.compile(regex_pattern)
 
 
