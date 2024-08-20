@@ -8,7 +8,13 @@ Picasso `Tutor`_ Plugin
 .. |Test Badge| image:: https://img.shields.io/github/actions/workflow/status/edunext/tutor-contrib-picasso/.github%2Fworkflows%2Ftests.yml?label=Test
    :alt: GitHub Actions Workflow Test Status
 
-Picasso is a `Tutor`_ plugin that simplifies pre-build processes, such as preparing Docker images with private requirements, executing commands before the build, and adding themes. Everything is managed through commands, making it easy to integrate into automated environments.
+Picasso is a `Tutor`_ plugin that streamlines and automates complex pre-build tasks into a cohesive command. 
+
+Current features include:
+
+- Adding private requirements: install private packages or dependencies in edx-platform.
+- Executing a bundle of commands: run multiple commands in a specific order with a single command.
+- Adding themes: manage custom themes to personalize Open edX.
 
 This plugin is based on https://github.com/eduNEXT/tutor-contrib-edunext-distro
 
@@ -42,7 +48,7 @@ Usage
 
 .. note::
 
-    Remember to run these commands before build your images if they are needed.
+    Please remember to run these commands before you build your images.
 
 
 Compatibility notes
@@ -50,7 +56,7 @@ Compatibility notes
 
 This plugin was tested from Palm release.
 
-About the commands
+Usage
 *******************
 
 Enable Private Packages

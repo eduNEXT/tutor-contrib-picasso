@@ -19,11 +19,8 @@ def enable_private_packages() -> None:
     Raises:
         Exception: If an error occurs during the cloning or defining process.
     """
-    tutor_root = (
-        subprocess.check_output("tutor config printroot", shell=True)
-        .decode("utf-8")
-        .strip()
-    )
+    context = click.get_current_context().obj
+    tutor_conf = tutor_config.load(context.root)
     tutor_version_obj = Version(tutor_version)
     # Define Quince version as the method for installing private packages changes from this version
     quince_version_obj = Version("v17.0.0")

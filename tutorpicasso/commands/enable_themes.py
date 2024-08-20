@@ -14,11 +14,8 @@ def enable_themes() -> None:
     This function enables the themes specified in the `PICASSO_THEMES` configuration
     and applies them using the ThemeEnabler and ThemeGitRepository classes.
     """
-    tutor_root = (
-        subprocess.check_output("tutor config printroot", shell=True)
-        .decode("utf-8")
-        .strip()
-    )
+    context = click.get_current_context().obj
+    tutor_conf = tutor_config.load(context.root)
     config: Any = tutor_config.load(tutor_root)
 
     if config.get("PICASSO_THEMES"):

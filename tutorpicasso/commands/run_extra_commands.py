@@ -24,8 +24,7 @@ def run_extra_commands() -> None:
     picasso_extra_commands: Any = config.get("PICASSO_EXTRA_COMMANDS", None)
     if picasso_extra_commands is not None:
         validate_commands(picasso_extra_commands)
-        for command in picasso_extra_commands:
-            run_command(command)
+        list(map(run_command, picasso_extra_commands))
 
 
 def validate_commands(commands: Any) -> None:
@@ -113,7 +112,7 @@ def find_tutor_misspelled(command: str) -> bool:
 
 def create_regex_from_array(arr: List[str]) -> re.Pattern[str]:
     """
-    This functions compiles a new regex turning taking care of
+    Compile a new regex and escape special characters in the given string.
     escaping special characters
 
     Args:
@@ -122,21 +121,20 @@ def create_regex_from_array(arr: List[str]) -> re.Pattern[str]:
     Return:
         A new compiled regex pattern that can be used for comparisons
     """
-    escaped_arr = [re.escape(item) for item in arr]
+    escaped_arr = list(map(re.escape, arr))
     regex_pattern = "|".join(escaped_arr)
     return re.compile(regex_pattern)
 
 
 def split_string(string: str, split_by: List[str]) -> List[str]:
     """
-    Takes a string that is wanted to be split according to some
-    other strings received in a list
+    Split strings based on given patterns.
 
     Args:
-        string (str): String that will be split
-        split_by (list[str]): Array of strings which will be used to split the string
+        string (str): string to be split  
+        split_by (list[str]): patterns to be used to split the string
 
     Return:
-        The string split into an array
+        The string split into a list
     """
     return re.split(create_regex_from_array(split_by), string)
