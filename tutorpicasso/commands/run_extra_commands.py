@@ -1,5 +1,6 @@
 import re
 import subprocess
+from itertools import chain
 
 # Was necessary to use this for compatibility with Python 3.8
 from typing import Any, List
@@ -15,16 +16,19 @@ def run_extra_commands() -> None:
     """
     This command runs tutor commands defined in PICASSO_EXTRA_COMMANDS
     """
-    tutor_root = (
-        subprocess.check_output("tutor config printroot", shell=True)
-        .decode("utf-8")
-        .strip()
-    )
-    config: Any = tutor_config.load(tutor_root)
-    picasso_extra_commands: Any = config.get("PICASSO_EXTRA_COMMANDS", None)
-    if picasso_extra_commands is not None:
-        validate_commands(picasso_extra_commands)
-        list(map(run_command, picasso_extra_commands))
+    context = click.get_current_context().obj
+    tutor_conf = tutor_config.load(context.root)
+
+    picasso_extra_commands: Any = tutor_conf.get("PICASSO_EXTRA_COMMANDS", None)
+
+    if not picasso_extra_commands:
+        return
+
+    error_message = validate_commands(picasso_extra_commands)
+    if error_message:
+        raise click.ClickException(error_message)
+
+    list(map(run_command, picasso_extra_commands))
 
 
 def validate_commands(commands: Any) -> None:
@@ -38,28 +42,35 @@ def validate_commands(commands: Any) -> None:
     splitted_commands = [
         split_string(command, COMMAND_CHAINING_OPERATORS) for command in commands
     ]
-    flat_commands_array: List[str] = sum(splitted_commands, [])
+    flat_commands_list: List[str] = chain.from_iterable(splitted_commands)
 
     invalid_commands = []
     misspelled_commands = []
-    for command in flat_commands_array:
+    for command in flat_commands_list:
         if "tutor" not in command.lower():
             if find_tutor_misspelled(command):
                 misspelled_commands.append(command)
             else:
                 invalid_commands.append(command)
 
-        if invalid_commands or misspelled_commands:
-            error_message = (
+        error_message = ""
+
+        if invalid_commands:
+            error_message += (
                 f"Found some issues with the commands:\n\n"
-                f"{'=> Invalid commands: ' if invalid_commands else ''}"
-                f"{', '.join(invalid_commands) if invalid_commands else ''}\n"
-                f"{'=> Misspelled commands: ' if misspelled_commands else ''}"
-                f"{', '.join(misspelled_commands) if misspelled_commands else ''}\n"
-                f"Take a look at the official Tutor commands: "
-                f"https://docs.tutor.edly.io/reference/cli/index.html"
+                f"=> Invalid commands: {', '.join(invalid_commands)}\n"
             )
-            raise click.ClickException(error_message)
+
+        if misspelled_commands:
+            error_message += (
+                f"=> Misspelled commands: {', '.join(misspelled_commands)}\n"
+            )
+
+        if error_message:
+            error_message += (
+                "Take a look at the official Tutor commands: "
+                "https://docs.tutor.edly.io/reference/cli/index.html"
+            )
 
 
 def run_command(command: str) -> None:
@@ -69,7 +80,7 @@ def run_command(command: str) -> None:
     This method runs the extra command provided.
 
     Args:
-            command (str): Tutor command.
+        command (str): Tutor command.
     """
     try:
         with subprocess.Popen(
@@ -82,15 +93,13 @@ def run_command(command: str) -> None:
             text=True,
         ) as process:
 
-            # It is sent a 'y' to say 'yes' on overriding the existing folders
-            stdout, stderr = process.communicate(input="y")
+            stdout, stderr = process.communicate()
 
             if process.returncode != 0 or "error" in stderr.lower():
                 raise subprocess.CalledProcessError(
                     process.returncode, command, output=stdout, stderr=stderr
                 )
 
-            # This print is left on purpose to show the command output
             click.echo(stdout)
 
     except subprocess.CalledProcessError as error:
@@ -99,7 +108,13 @@ def run_command(command: str) -> None:
 
 def find_tutor_misspelled(command: str) -> bool:
     """
-    This function takes a command and looks if it has the word 'tutor' misspelled
+    Look for misspelled occurrences of the word `tutor` in a given string. E.g. ...
+
+    Args:
+        command (str): string to be reviewed.
+
+    Return:
+        True if any misspelled occurrence is found, False otherwise.
 
     Args:
         command (str): Command to be reviewed
@@ -110,19 +125,19 @@ def find_tutor_misspelled(command: str) -> bool:
     return bool(re.match(r"[tT](?:[oru]{3}|[oru]{2}[rR]|[oru]u?)", command))
 
 
-def create_regex_from_array(arr: List[str]) -> re.Pattern[str]:
+def create_regex_from_list(special_chars: List[str]) -> re.Pattern[str]:
     """
     Compile a new regex and escape special characters in the given string.
     escaping special characters
 
     Args:
-        arr (list[str]): String that would be used to create a new regex
+        special_chars (list[str]): String that would be used to create a new regex
 
     Return:
         A new compiled regex pattern that can be used for comparisons
     """
-    escaped_arr = list(map(re.escape, arr))
-    regex_pattern = "|".join(escaped_arr)
+    escaped_special_chars = list(map(re.escape, special_chars))
+    regex_pattern = "|".join(escaped_special_chars)
     return re.compile(regex_pattern)
 
 
@@ -137,4 +152,4 @@ def split_string(string: str, split_by: List[str]) -> List[str]:
     Return:
         The string split into a list
     """
-    return re.split(create_regex_from_array(split_by), string)
+    return re.split(create_regex_from_list(split_by), string)

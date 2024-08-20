@@ -18,21 +18,20 @@ def enable_themes() -> None:
     tutor_root = context.root
     tutor_conf = tutor_config.load(tutor_root)
 
-    if tutor_conf.get("PICASSO_THEMES"):
-        for theme in tutor_conf["PICASSO_THEMES"]:
-            try:
-                if not {"name", "repo", "version"}.issubset(theme.keys()):
-                    raise KeyError(
-                        f"{theme} is missing one or more required keys: "
-                        "'name', 'repo', 'version'"
-                    )
+    if not tutor_conf.get("PICASSO_THEMES"):
+        return
 
-                theme_path = f'{tutor_root}/env/build/openedx/themes/{theme["name"]}'
-                if os.path.isdir(theme_path):
-                    subprocess.call(["rm", "-rf", theme_path])
+    for theme in tutor_conf["PICASSO_THEMES"]:
+        if not {"name", "repo", "version"}.issubset(theme.keys()):
+            raise click.ClickException(
+                f"{theme} is missing one or more required keys: "
+                "'name', 'repo', 'version'"
+            )
 
-                subprocess.call(
-                    ["git", "clone", "-b", theme["version"], theme["repo"], theme_path],
-                )
-            except KeyError as e:
-                raise click.ClickException(f"Error: {str(e)}")
+        theme_path = f'{tutor_root}/env/build/openedx/themes/{theme["name"]}'
+        if os.path.isdir(theme_path):
+            subprocess.call(["rm", "-rf", theme_path])
+
+        subprocess.call(
+            ["git", "clone", "-b", theme["version"], theme["repo"], theme_path],
+        )

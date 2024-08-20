@@ -17,7 +17,7 @@ def enable_private_packages() -> None:
     defining them as private.
 
     Raises:
-        Exception: If an error occurs during the cloning or defining process.
+        Exception: If there is not enough information to clone the repo.
     """
     context = click.get_current_context().obj
     tutor_root = context.root
@@ -41,39 +41,33 @@ def enable_private_packages() -> None:
             file.write("")
 
     for package, info in packages.items():
-        try:
-            if not {"name", "repo", "version"}.issubset(info):
-                raise KeyError(
-                    f"{package} is missing one of the required keys: 'name', 'repo', 'version'"
-                )
-
-            if os.path.isdir(f'{private_requirements_root}/{info["name"]}'):
-                subprocess.call(
-                    ["rm", "-rf", f'{private_requirements_root}/{info["name"]}']
-                )
-
-            subprocess.call(
-                ["git", "clone", "-b", info["version"], info["repo"]],
-                cwd=private_requirements_root,
+        if not {"name", "repo", "version"}.issubset(info):
+            raise click.ClickException(
+                f"{package} is missing one of the required keys: 'name', 'repo', 'version'"
             )
 
-            if tutor_version_obj < quince_version_obj:
-                echo_command = (
-                    f'echo "-e ./{info["name"]}/" >> {private_requirements_txt}'
-                )
-                subprocess.call(echo_command, shell=True)
-            else:
-                subprocess.call(
-                    [
-                        "tutor",
-                        "mounts",
-                        "add",
-                        f'{private_requirements_root}/{info["name"]}',
-                    ]
-                )
+        if os.path.isdir(f'{private_requirements_root}/{info["name"]}'):
+            subprocess.call(
+                ["rm", "-rf", f'{private_requirements_root}/{info["name"]}']
+            )
 
-        except KeyError as e:
-            raise click.ClickException(str(e))
+        subprocess.call(
+            ["git", "clone", "-b", info["version"], info["repo"]],
+            cwd=private_requirements_root,
+        )
+
+        if tutor_version_obj < quince_version_obj:
+            echo_command = f'echo "-e ./{info["name"]}/" >> {private_requirements_txt}'
+            subprocess.call(echo_command, shell=True)
+        else:
+            subprocess.call(
+                [
+                    "tutor",
+                    "mounts",
+                    "add",
+                    f'{private_requirements_root}/{info["name"]}',
+                ]
+            )
 
 
 def get_picasso_packages(settings: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
@@ -88,8 +82,6 @@ def get_picasso_packages(settings: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         and the values are package details.
     """
     picasso_packages = {
-        key: val
-        for key, val in settings.items()
-        if key.endswith("_DPKG") and val != "None"
+        key: val for key, val in settings.items() if key.endswith("_DPKG") and val
     }
     return picasso_packages
