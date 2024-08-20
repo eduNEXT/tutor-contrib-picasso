@@ -26,25 +26,17 @@ Installation
 
     pip install git+https://github.com/eduNEXT/tutor-contrib-picasso
 
-Usage
-*****
+Enable the plugin
+******************
 
 .. code-block:: bash
 
     # To enable the plugin
     tutor plugins enable picasso
 
-    # Show help
+    # Show the picasso commands
     tutor picasso -h
 
-    # Enable themes
-    tutor picasso enable-themes
-
-    # Enable private packages
-    tutor picasso enable-private-packages
-
-    # Run Tutor commands
-    tutor picasso run-extra-commands 
 
 .. note::
 
@@ -54,15 +46,19 @@ Usage
 Compatibility notes
 *******************
 
-This plugin was tested from Palm release.
+This plugin was tested from Olive release.
 
 Usage
-*******************
+*******
 
 Enable Private Packages
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-This command allows the installation of private Open edX Django apps. It clones the private repository and, through the ``tutor mounts`` command, adds it to the Dockerfile for inclusion in the build process. The input it takes is:
+To enable the installation of private Open edX Django apps, follow these steps:
+
+1. Add configuration to the configuration file
+
+First, add the necessary configuration in your Tutor environment's ``config.yml`` file:
 
 .. code-block:: yaml
     PICASSO_<YOUR_PACKAGE_NAME>_DPKG:
@@ -73,6 +69,20 @@ This command allows the installation of private Open edX Django apps. It clones 
 .. note::
 
     It is needed to use the SSH URL to clone private packages.
+
+2. Save the configuration with ``tutor config save``
+
+3. Run the enable command 
+
+Next, run the following command to enable private packages:
+
+.. code-block:: bash
+
+    # Enable private packages
+    tutor picasso enable-private-packages
+
+
+This command allows the installation of private Open edX Django apps. It clones the private repository and, through the ``tutor mounts`` command, adds it to the Dockerfile for inclusion in the build process.
 
 .. warning::
 
@@ -95,7 +105,11 @@ This command allows the installation of private Open edX Django apps. It clones 
 Enable Themes
 ^^^^^^^^^^^^^^
 
-This command clones your theme repository into the folder that Tutor uses for themes. Documentation available at `Installing custom theme`_ tutorial. The input it takes is:
+To enable themes in your Tutor environment, follow these steps:
+
+1. Add configuration to the configuration file
+
+First, add the necessary configuration in your Tutor environment's ``config.yml`` file:
 
 .. code-block:: yaml
     PICASSO_THEMES:
@@ -110,6 +124,17 @@ This command clones your theme repository into the folder that Tutor uses for th
 
     If your theme repository is public, you can also use the HTTPS URL in ``repo``.
 
+2. Save the configuration with ``tutor config save``
+
+3. Run the enable command
+
+.. code-block:: bash
+
+    # Enable themes
+    tutor picasso enable-themes
+
+This command clones your theme repository into the folder that Tutor uses for themes. Documentation available at `Installing custom theme`_ tutorial.
+
 .. note::
 
     Don't forget to add extra configurations in a Tutor plugin if your theme requires it.
@@ -118,7 +143,11 @@ This command clones your theme repository into the folder that Tutor uses for th
 Run Extra Commands
 ^^^^^^^^^^^^^^^^^^^
 
-This command allows you to run a list of Tutor commands. These commands are executed in bash and, for security reasons, are restricted to running only Tutor commands. The input it takes is:
+To execute a list of Tutor commands in your Tutor environment, follow these steps:
+
+1. Add configuration to the configuration file
+
+First, add the necessary configuration in your Tutor environment's ``config.yml`` file:
 
 .. code-block:: yaml
     PICASSO_EXTRA_COMMANDS:
@@ -129,6 +158,18 @@ This command allows you to run a list of Tutor commands. These commands are exec
     .
     .
     .
+
+2. Save the configuration with ``tutor config save``
+
+3. Run the following command
+
+.. code-block:: bash
+
+    # Run Tutor commands
+    tutor picasso run-extra-commands
+
+This command allows you to run a list of Tutor commands. These commands are executed in bash and, for security reasons, are restricted to running only Tutor commands.
+
 
 License
 *******
