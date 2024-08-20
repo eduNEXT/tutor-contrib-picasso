@@ -15,11 +15,11 @@ def enable_themes() -> None:
     and applies them using the ThemeEnabler and ThemeGitRepository classes.
     """
     context = click.get_current_context().obj
-    tutor_conf = tutor_config.load(context.root)
-    config: Any = tutor_config.load(tutor_root)
+    tutor_root = context.root
+    tutor_conf = tutor_config.load(tutor_root)
 
-    if config.get("PICASSO_THEMES"):
-        for theme in config["PICASSO_THEMES"]:
+    if tutor_conf.get("PICASSO_THEMES"):
+        for theme in tutor_conf["PICASSO_THEMES"]:
             try:
                 if not {"name", "repo", "version"}.issubset(theme.keys()):
                     raise KeyError(

@@ -20,15 +20,15 @@ def enable_private_packages() -> None:
         Exception: If an error occurs during the cloning or defining process.
     """
     context = click.get_current_context().obj
-    tutor_conf = tutor_config.load(context.root)
+    tutor_root = context.root
+    tutor_conf = tutor_config.load(tutor_root)
     tutor_version_obj = Version(tutor_version)
     # Define Quince version as the method for installing private packages changes from this version
     quince_version_obj = Version("v17.0.0")
     # Use these specific paths as required by Tutor < Quince
     private_requirements_root = f"{tutor_root}/env/build/openedx/requirements"
     private_requirements_txt = f"{private_requirements_root}/private.txt"
-    config = tutor_config.load(tutor_root)
-    packages = get_picasso_packages(config)
+    packages = get_picasso_packages(tutor_conf)
 
     # Create necessary files and directories if they don't exist
     if not os.path.exists(private_requirements_root):

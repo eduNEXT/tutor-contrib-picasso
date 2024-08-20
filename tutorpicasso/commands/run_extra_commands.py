@@ -131,7 +131,7 @@ def split_string(string: str, split_by: List[str]) -> List[str]:
     Split strings based on given patterns.
 
     Args:
-        string (str): string to be split  
+        string (str): string to be split
         split_by (list[str]): patterns to be used to split the string
 
     Return:

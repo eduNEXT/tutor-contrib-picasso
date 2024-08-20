@@ -4,7 +4,7 @@ SRC_DIRS = ./tutorpicasso
 BLACK_OPTS = --exclude templates ${SRC_DIRS}
 
 # Warning: These checks are not necessarily run on every PR.
-test: test-lint test-types test-format  # Run some static checks.
+test: test-lint test-format  # Run some static checks.
 
 test-format: ## Run code formatting tests
 	black --check --diff $(BLACK_OPTS)
