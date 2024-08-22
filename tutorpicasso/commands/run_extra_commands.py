@@ -49,31 +49,29 @@ def validate_commands(commands: Any) -> str:
         if "tutor" in command.lower():
             continue
 
-        if find_tutor_misspelled(command):
-            misspelled_commands.append(command)
-        else:
-            invalid_commands.append(command)
+    if find_tutor_misspelled(command):
+        misspelled_commands.append(command)
+    else:
+        invalid_commands.append(command)
 
-        error_message = ""
+    error_message = ""
+    if invalid_commands:
+        error_message += (
+            f"Found some issues with the commands:\n\n"
+            f"=> Invalid commands: {', '.join(invalid_commands)}\n"
+        )
 
-        if invalid_commands:
-            error_message += (
-                f"Found some issues with the commands:\n\n"
-                f"=> Invalid commands: {', '.join(invalid_commands)}\n"
-            )
+    if misspelled_commands:
+        error_message += (
+            f"=> Misspelled commands: {', '.join(misspelled_commands)}\n"
+        )
 
-        if misspelled_commands:
-            error_message += (
-                f"=> Misspelled commands: {', '.join(misspelled_commands)}\n"
-            )
-
-        if error_message:
-            error_message += (
-                "Take a look at the official Tutor commands: "
-                "https://docs.tutor.edly.io/reference/cli/index.html"
-            )
-            return error_message
-    return ""
+    if error_message:
+        error_message += (
+            "Take a look at the official Tutor commands: "
+            "https://docs.tutor.edly.io/reference/cli/index.html"
+        )
+    return error_message
 
 
 def run_command(command: str) -> None:
