@@ -23,15 +23,9 @@ def enable_private_packages() -> None:
     tutor_root = context.root
     tutor_conf = tutor_config.load(tutor_root)
 
-    tutor_version_obj = Version(tutor_version)
-    # Define Quince version as the method for installing private packages changes from this version
-    quince_version_obj = Version("v17.0.0")
-
-    # Use these specific paths as required by Tutor < Quince
-    private_requirements_root = f"{tutor_root}/env/build/openedx/requirements"
+    private_requirements_root = f"{tutor_root}/env/build/openedx/private_requirements"
     packages = get_picasso_packages(tutor_conf)
 
-    # Create necessary directory if it doesn't exist
     if not os.path.exists(private_requirements_root):
         os.makedirs(private_requirements_root)
 
@@ -51,11 +45,25 @@ def enable_private_packages() -> None:
             cwd=private_requirements_root,
         )
 
-        if tutor_version_obj < quince_version_obj:
-            private_requirements_txt = f"{private_requirements_root}/private.txt"
-            _enable_private_packages_before_quince(info, private_requirements_txt)
-        else:
-            _enable_private_packages(info, private_requirements_root)
+        handle_private_requirements_by_tutor_version(info, private_requirements_root)
+
+
+def handle_private_requirements_by_tutor_version(info: Dict[str, str], private_requirements_path: str) -> None:
+    """
+    Handle the private requirements based on the Tutor version.
+
+    Args:
+        info (Dict[str, str]): A dictionary containing metadata about the package. Expected to have a "name" key.
+        private_requirements_path (str): The directory path to store the private packages.
+    """
+    tutor_version_obj = Version(tutor_version)
+    quince_version_obj = Version("v17.0.0")
+
+    if tutor_version_obj < quince_version_obj:
+        private_txt_path = f"{private_requirements_path}/private.txt"
+        _enable_private_packages_before_quince(info, private_txt_path)
+    else:
+        _enable_private_packages_latest(info, private_requirements_path)
 
 
 def _enable_private_packages_before_quince(
@@ -68,8 +76,6 @@ def _enable_private_packages_before_quince(
         info (Dict[str, str]): A dictionary containing metadata about the package. Expected to have a "name" key.
         private_requirements_txt (str): The file path to `private.txt`, which stores the list of private packages to be included in the build.
     """
-
-    # Create necessary file if it doesn't exist
     if not os.path.exists(private_requirements_txt):
         with open(private_requirements_txt, "w") as file:
             file.write("")
@@ -78,7 +84,7 @@ def _enable_private_packages_before_quince(
     subprocess.call(echo_command, shell=True)
 
 
-def _enable_private_packages(
+def _enable_private_packages_latest(
     info: Dict[str, str], private_requirements_root: str
 ) -> None:
     """
