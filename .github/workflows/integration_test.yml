@@ -6,7 +6,6 @@ jobs:
     name: Integration with Tutor
     strategy:
       matrix:
-        # tutor_version: ["Redwood", "Quince", "Palm", "Olive"]
         tutor_version: ["<19.0.0", "<18.0.0", "<17.0.0", "<16.0.0"]
     runs-on: ubuntu-latest
     steps:

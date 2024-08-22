@@ -2,7 +2,6 @@ import re
 import subprocess
 from itertools import chain
 
-# Was necessary to use this for compatibility with Python 3.8
 from typing import Any, List
 
 import click
@@ -47,11 +46,13 @@ def validate_commands(commands: Any) -> str:
     invalid_commands = []
     misspelled_commands = []
     for command in flat_commands_list:
-        if "tutor" not in command.lower():
-            if find_tutor_misspelled(command):
-                misspelled_commands.append(command)
-            else:
-                invalid_commands.append(command)
+        if "tutor" in command.lower():
+            continue
+
+        if find_tutor_misspelled(command):
+            misspelled_commands.append(command)
+        else:
+            invalid_commands.append(command)
 
         error_message = ""
 
@@ -84,28 +85,24 @@ def run_command(command: str) -> None:
     Args:
         command (str): Tutor command.
     """
-    try:
-        with subprocess.Popen(
-            command,
-            shell=True,
-            executable="/bin/bash",
-            stdin=subprocess.PIPE,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
-        ) as process:
+    with subprocess.Popen(
+        command,
+        shell=True,
+        executable="/bin/bash",
+        stdin=subprocess.PIPE,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    ) as process:
 
-            stdout, stderr = process.communicate()
+        stdout, stderr = process.communicate()
 
-            if process.returncode != 0 or "error" in stderr.lower():
-                raise subprocess.CalledProcessError(
-                    process.returncode, command, output=stdout, stderr=stderr
-                )
+        if process.returncode != 0 or "error" in stderr.lower():
+            raise click.ClickException(
+                f"Command '{command}' failed with return code {process.returncode}. Output: {stdout}. Error: {stderr}"
+            )
 
-            click.echo(stdout)
-
-    except subprocess.CalledProcessError as error:
-        raise click.ClickException(str(error))
+        click.echo(stdout)
 
 
 def find_tutor_misspelled(command: str) -> bool:
