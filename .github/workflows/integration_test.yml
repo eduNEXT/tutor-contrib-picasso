@@ -33,20 +33,22 @@ jobs:
 
       - name: Adding data to the config.yml
         run: |
-          echo "PICASSO_MANAGE_DPKG:" | tee -a ./config.yml
-          echo "  name: eox-manage" | tee -a ./config.yml
-          echo "  repo: git@github.com:eduNEXT/eox-manage.git" | tee -a ./config.yml
-          echo "  version: v5.2.0" | tee -a ./config.yml
-          echo "PICASSO_THEMES:" | tee -a ./config.yml
-          echo "- name: endx-saas-themes" | tee -a ./config.yml
-          echo "  repo: git@github.com:eduNEXT/ednx-saas-themes.git" | tee -a ./config.yml
-          echo "  version: master" | tee -a ./config.yml
-          echo "PICASSO_EXTRA_COMMANDS:" | tee -a ./config.yml
-          echo "- tutor plugins update" | tee -a ./config.yml
-          echo "- tutor plugins index add https://raw.githubusercontent.com/eduNEXT/tutor-plugin-indexes/picasso_test/" | tee -a ./config.yml
-          echo "- tutor plugins install mfe mfe_extensions aspects" | tee -a ./config.yml
-          echo "- tutor plugins enable mfe mfe_extensions aspects" | tee -a ./config.yml
-          echo "- tutor config save" | tee -a ./config.yml
+          cat <<EOF >> config.yml
+          PICASSO_MANAGE_DPKG:
+            name: eox-manage
+            repo: git@github.com:eduNEXT/eox-manage.git
+            version: v5.2.0
+          PICASSO_THEMES:
+            - name: endx-saas-themes
+              repo: git@github.com:eduNEXT/ednx-saas-themes.git
+              version: master
+          PICASSO_EXTRA_COMMANDS:
+            - tutor plugins update
+            - tutor plugins index add https://raw.githubusercontent.com/eduNEXT/tutor-plugin-indexes/picasso_test/
+            - tutor plugins install mfe mfe_extensions aspects
+            - tutor plugins enable mfe mfe_extensions aspects
+            - tutor config save
+          EOF
 
       - name: Check run-extra-commands
         run: |
