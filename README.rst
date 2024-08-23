@@ -61,10 +61,11 @@ To enable the installation of private Open edX Django apps, follow these steps:
 First, add the necessary configuration in your Tutor environment's ``config.yml`` file:
 
 .. code-block:: yaml
+
     PICASSO_<YOUR_PACKAGE_NAME>_DPKG:
-    name: <your_package_name>
-    repo: <your SSH URL for cloning the repo. e.g., git@github.com:yourorg/package.git>
-    version: <your branch, tag o release for cloning. e.g., v5.2.0>
+        name: <your_package_name>
+        repo: <your SSH URL for cloning the repo. e.g., git@github.com:yourorg/package.git>
+        version: <your branch, tag o release for cloning. e.g., v5.2.0>
 
 .. note::
 
@@ -72,9 +73,7 @@ First, add the necessary configuration in your Tutor environment's ``config.yml`
 
 2. Save the configuration with ``tutor config save``
 
-3. Run the enable command 
-
-Next, run the following command to enable private packages:
+3. Run the following command to enable private packages:
 
 .. code-block:: bash
 
@@ -107,11 +106,10 @@ Enable Themes
 
 To enable themes in your Tutor environment, follow these steps:
 
-1. Add configuration to the configuration file
-
-First, add the necessary configuration in your Tutor environment's ``config.yml`` file:
+1. Add the necessary configuration in your Tutor environment's ``config.yml`` file:
 
 .. code-block:: yaml
+
     PICASSO_THEMES:
     - name: <your_theme_name>
       repo: <your SSH URL for cloning the repo. e.g., git@github.com:yourorg/theme.git>
@@ -145,11 +143,10 @@ Run Extra Commands
 
 To execute a list of Tutor commands in your Tutor environment, follow these steps:
 
-1. Add configuration to the configuration file
-
-First, add the necessary configuration in your Tutor environment's ``config.yml`` file:
+1. Add the necessary configuration in your Tutor environment's ``config.yml`` file:
 
 .. code-block:: yaml
+
     PICASSO_EXTRA_COMMANDS:
     - <A tutor command. e.g., tutor plugins index add X>
     - <A tutor command. e.g., tutor plugins install mfe>
