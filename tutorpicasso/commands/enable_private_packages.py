@@ -114,7 +114,7 @@ def get_picasso_packages(settings: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         settings (dict): The tutor configuration settings.
 
     Returns:
-        dict: A dictionary of distribution packages, where the keys are package names
+        A dictionary of distribution packages, where the keys are package names
         and the values are package details.
     """
     picasso_packages = {

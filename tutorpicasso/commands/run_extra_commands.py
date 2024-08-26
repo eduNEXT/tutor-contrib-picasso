@@ -114,12 +114,6 @@ def find_tutor_misspelled(command: str) -> bool:
 
     Return:
         True if any misspelled occurrence is found, False otherwise.
-
-    Args:
-        command (str): Command to be reviewed
-
-    Return:
-        If its found the word 'tutor' misspelled is returned True
     """
     return bool(re.match(r"[tT](?:[oru]{3}|[oru]{2}[rR]|[oru]u?)", command))
 
