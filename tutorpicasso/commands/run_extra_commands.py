@@ -2,7 +2,7 @@ import re
 import subprocess
 from itertools import chain
 
-from typing import Any, List
+from typing import Any, List, Pattern
 
 import click
 from tutor import config as tutor_config
@@ -113,7 +113,7 @@ def find_tutor_misspelled(command: str) -> bool:
     return bool(re.match(r"[tT](?:[oru]{3}|[oru]{2}[rR]|[oru]u?)", command))
 
 
-def create_regex_from_list(special_chars: List[str]) -> re.Pattern[str]:
+def create_regex_from_list(special_chars: List[str]) -> Pattern[str]:
     """
     Compile a new regex and escape special characters in the given string.
     escaping special characters
