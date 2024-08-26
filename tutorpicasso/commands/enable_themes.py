@@ -21,6 +21,9 @@ def enable_themes() -> None:
     if not tutor_conf.get("PICASSO_THEMES"):
         return
 
+    # We use `type: ignore` for the `tutor_conf` object
+    # because it comes from the Tutor framework.
+    # We are not handle type errors related to this object.
     for theme in tutor_conf["PICASSO_THEMES"]:  # type: ignore
         if not {"name", "repo", "version"}.issubset(theme.keys()):  # type: ignore
             raise click.ClickException(
