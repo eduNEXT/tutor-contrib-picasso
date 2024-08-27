@@ -1,12 +1,14 @@
 Picasso `Tutor`_ Plugin
 #########################
 
-|Maintainance Badge| |Test Badge|
+|Maintainance Badge| |Test Badge| |Integration Test Badge|
 
 .. |Maintainance Badge| image:: https://img.shields.io/badge/Status-Maintained-brightgreen
    :alt: Maintainance Status
-.. |Test Badge| image:: https://img.shields.io/github/actions/workflow/status/edunext/tutor-contrib-picasso/.github%2Fworkflows%2Ftests.yml?label=Test
+.. |Test Badge| image:: https://github.com/edunext/tutor-contrib-picasso/actions/workflows/test.yml/badge.svg
    :alt: GitHub Actions Workflow Test Status
+.. |Integration Test Badge| image:: https://github.com/edunext/tutor-contrib-picasso/actions/workflows/integration_test.yml/badge.svg
+   :alt: GitHub Actions Workflow Integration Test Status
 
 Picasso is a `Tutor`_ plugin that streamlines and automates complex pre-build tasks into a cohesive command. 
 
@@ -38,9 +40,7 @@ Enable the plugin
     tutor picasso -h
 
 
-.. note::
-
-    Please remember to run these commands before you build your images.
+**Note:** Please remember to run these commands before you build your images.
 
 
 Compatibility notes
@@ -67,9 +67,8 @@ First, add the necessary configuration in your Tutor environment's ``config.yml`
         repo: <your SSH URL for cloning the repo. e.g., git@github.com:yourorg/package.git>
         version: <your branch, tag o release for cloning. e.g., v5.2.0>
 
-.. note::
 
-    It is needed to use the SSH URL to clone private packages.
+**Note:** It is needed to use the SSH URL to clone private packages.
 
 2. Save the configuration with ``tutor config save``
 
@@ -83,22 +82,18 @@ First, add the necessary configuration in your Tutor environment's ``config.yml`
 
 This command allows the installation of private Open edX Django apps. It clones the private repository and, through the ``tutor mounts`` command, adds it to the Dockerfile for inclusion in the build process.
 
-.. warning::
+**Warning:** For the mount to work correctly and include the package in the Dockerfile, it must be added to a tutor filter ``MOUNTED_DIRECTORIES``. By default, Picasso adds ``eox-*`` packages. If you need to add another private package, don't forget to include this configuration in a Tutor plugin.
 
-    For the mount to work correctly and include the package in the Dockerfile, it must be added to a tutor filter ``MOUNTED_DIRECTORIES``. By default, Picasso adds ``eox-*`` packages. If you need to add another private package, don't forget to include this configuration in a Tutor plugin.
+.. code-block:: python
 
-    .. code-block:: python
-
-        hooks.Filters.MOUNTED_DIRECTORIES.add_items(
-            [
-                ("openedx", "<your_package_name>"),
-            ]
-        )
+    hooks.Filters.MOUNTED_DIRECTORIES.add_items(
+        [
+            ("openedx", "<your_package_name>"),
+        ]
+    )
 
 
-.. note::
-
-    If you want to use public packages, we recommend using the ``OPEN_EDX_EXTRA_PIP_REQUIREMENTS`` variable in the ``config.yml`` of your Tutor environment.
+**Note:** If you want to use public packages, we recommend using the ``OPEN_EDX_EXTRA_PIP_REQUIREMENTS`` variable in the ``config.yml`` of your Tutor environment.
 
 
 Enable Themes
@@ -118,9 +113,8 @@ To enable themes in your Tutor environment, follow these steps:
       repo: <your SSH URL for cloning the repo. e.g., git@github.com:yourorg/another_theme.git>
       version: <your branch, tag o release for cloning. e.g., edunext/redwood.blue>
 
-.. note::
 
-    If your theme repository is public, you can also use the HTTPS URL in ``repo``.
+**Note:** If your theme repository is public, you can also use the HTTPS URL in ``repo``.
 
 2. Save the configuration with ``tutor config save``
 
@@ -133,9 +127,7 @@ To enable themes in your Tutor environment, follow these steps:
 
 This command clones your theme repository into the folder that Tutor uses for themes. Documentation available at `Installing custom theme`_ tutorial.
 
-.. note::
-
-    Don't forget to add extra configurations in a Tutor plugin if your theme requires it.
+**Note:** Don't forget to add extra configurations in a Tutor plugin if your theme requires it.
 
 
 Run Extra Commands
