@@ -118,6 +118,8 @@ def get_picasso_packages(settings: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
         and the values are package details.
     """
     picasso_packages = {
-        key: val for key, val in settings.items() if key.endswith("_DPKG") and val
+        key: val
+        for key, val in settings.items()
+        if key.startswith("PICASSO_") and key.endswith("_DPKG") and val
     }
     return picasso_packages
