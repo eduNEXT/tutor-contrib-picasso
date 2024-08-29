@@ -1,0 +1,3 @@
+{%- if PICASSO_DEFAULT_SITE_THEME is defined or PICASSO_THEMES_NAME is defined %}
+DEFAULT_SITE_THEME: "{{ PICASSO_DEFAULT_SITE_THEME | default(PICASSO_THEMES_NAME[0]) }}"
+{% endif %}

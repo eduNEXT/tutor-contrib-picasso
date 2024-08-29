@@ -1,0 +1,23 @@
+{% if PICASSO_TUTOR_VERSION is defined and PICASSO_THEME_DIRS is defined and PICASSO_THEMES_NAME is defined %}
+{% set redwood_version = 'v18.0.0'.lstrip('v').split('.') %}
+{% set current_version = PICASSO_TUTOR_VERSION.lstrip('v').split('.') %}
+{% set redwood_version = redwood_version | map('int') | list %}
+{% set current_version = current_version | map('int') | list %}
+
+COPY --chown=app:app ./themes/ /openedx/themes
+{% if (current_version[0] < redwood_version[0]) %}
+# This compiles the Picasso themes assets in the releases < redwood.
+RUN openedx-assets themes \
+    --theme-dirs {{ PICASSO_THEME_DIRS | join(' ') }} \
+    --themes {{ PICASSO_THEMES_NAME | join(' ') }} \
+    && openedx-assets collect --settings=tutor.assets \
+    && rdfind -makesymlinks true -followsymlinks true /openedx/staticfiles/
+{% else %}
+# This compiles the Picasso themes assets from the redwood release.
+RUN npm run compile-sass -- \
+    --theme-dir {{ PICASSO_THEME_DIRS | join(' --theme-dir ') }} \
+    --theme {{ PICASSO_THEMES_NAME | join(' --theme ') }} \
+    && ./manage.py lms collectstatic --noinput --settings=tutor.assets \
+    && rdfind -makesymlinks true -followsymlinks true /openedx/staticfiles/
+{% endif %}
+{% endif %}

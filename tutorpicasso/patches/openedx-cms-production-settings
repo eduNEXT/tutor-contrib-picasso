@@ -1,0 +1,6 @@
+{% if PICASSO_THEMES is defined -%}
+ENABLE_COMPREHENSIVE_THEMING = True
+{%- endif %}
+{% if PICASSO_THEME_DIRS is defined -%}
+COMPREHENSIVE_THEME_DIRS.extend({{ PICASSO_THEME_DIRS }})
+{%- endif %}
