@@ -105,7 +105,7 @@ To enable themes in your Tutor environment, follow these steps:
 
 .. code-block:: yaml
     
-    PICASSO_TUTOR_VERSION: <the version of the tutor your installation used. e.g., v18.1.1>
+    TUTOR_VERSION: <the version of the tutor your installation used. e.g., v18.1.1>
     PICASSO_THEMES:
     - name: <your_theme_repository>
       repo: <your SSH URL for cloning the repo. e.g., git@github.com:yourorg/theme.git>
@@ -140,7 +140,7 @@ If ``PICASSO_THEMES`` is defined, the plugin will set ``ENABLE_COMPREHENSIVE_THE
 
 If ``PICASSO_THEME_DIRS`` is defined, the plugin will extend the ``COMPREHENSIVE_THEME_DIRS`` by patches.
 
-The ``PICASSO_TUTOR_VERSION``, ``PICASSO_THEME_DIRS`` and ``PICASSO_THEMES_NAME`` variables are used to compile the themes. For detailed information, see the patch `openedx-dockerfile-pre-assets <tutorpicasso/patches/openedx-dockerfile-pre-assets>`_.
+The ``TUTOR_VERSION``, ``PICASSO_THEME_DIRS`` and ``PICASSO_THEMES_NAME`` variables are used to compile the themes. For detailed information, see the patch `openedx-dockerfile-pre-assets <tutorpicasso/patches/openedx-dockerfile-pre-assets>`_.
 
 You can set the ``PICASSO_DEFAULT_SITE_THEME`` (optional), which will be in ``DEFAULT_SITE_THEME``; if not, we will use the first element in ``PICASSO_THEMES_NAME``.
 

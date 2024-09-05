@@ -33,9 +33,9 @@ jobs:
 
       - name: Adding data to the config.yml
         run: |
-          PICASSO_TUTOR_VERSION=$(tutor --version | awk '{print $NF}')
+          TUTOR_VERSION=$(tutor --version | awk '{print $NF}')
           cat <<EOF >> config.yml
-          PICASSO_TUTOR_VERSION: $PICASSO_TUTOR_VERSION
+          TUTOR_VERSION: $TUTOR_VERSION
           PICASSO_MANAGE_DPKG:
             name: eox-manage
             repo: git@github.com:eduNEXT/eox-manage.git
