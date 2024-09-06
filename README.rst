@@ -1,5 +1,5 @@
-Picasso `Tutor`_ Plugin
-#########################
+Picasso Tutor Plugin
+#######################
 
 |Maintainance Badge| |Test Badge| |Integration Test Badge|
 
@@ -14,12 +14,25 @@ Picasso is a `Tutor`_ plugin that streamlines and automates complex pre-build ta
 
 Current features include:
 
-- Adding private requirements: install private packages or dependencies in edx-platform.
-- Executing a bundle of commands: run multiple commands in a specific order with a single command.
-- Adding themes: manage custom themes to personalize Open edX.
+- **Adding private requirements:** install private packages or dependencies in edx-platform.
+- **Executing a bundle of commands:** run multiple commands in a specific order with a single command.
+- **Adding themes:** manage custom themes to personalize Open edX.
 
 This plugin is based on https://github.com/eduNEXT/tutor-contrib-edunext-distro
 
+Index
+******
+
+- `Installation`_
+- `Enable the plugin`_
+- `Usage`_
+
+    - `Enable Private Packages`_
+    - `Enable Themes`_
+    - `Run Extra Commands`_
+
+- `Compatibility notes`_
+- `License`_
 
 Installation
 ************
@@ -40,16 +53,10 @@ Enable the plugin
     tutor picasso -h
 
 
-**Note:** Please remember to run these commands before you build your images.
-
-
-Compatibility notes
-*******************
-
-This plugin was tested from Olive release.
-
 Usage
 *******
+
+Remember to follow the procedure you need before building your images.
 
 Enable Private Packages
 ^^^^^^^^^^^^^^^^^^^^^^^^
@@ -175,6 +182,16 @@ To execute a list of Tutor commands in your Tutor environment, follow these step
     tutor picasso run-extra-commands
 
 This command allows you to run a list of Tutor commands. These commands are executed in bash and, for security reasons, are restricted to running only Tutor commands.
+
+
+Compatibility notes
+*******************
+
+This plugin was tested from Olive release.
+
+**Note:** If you want to use tutor plugin indexes, you need an ``Tutor version >= 15.3.0``.
+
+**Note:** For the Quince release, we recommend using ``Tutor version >= v17.0.3`` as it includes an important fix related to the ``enable-private-package`` command. For more information, visit: https://github.com/overhangio/tutor/pull/1016.
 
 
 License
