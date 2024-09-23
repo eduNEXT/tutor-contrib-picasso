@@ -40,10 +40,17 @@ def enable_private_packages() -> None:
                 ["rm", "-rf", f'{private_requirements_path}/{info["name"]}']
             )
 
-        subprocess.call(
+        process = subprocess.run(
             ["git", "clone", "-b", info["version"], info["repo"]],
             cwd=private_requirements_path,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
         )
+
+        click.echo(process.stdout)
+        if process.stderr:
+            click.echo(process.stderr)
 
         handle_private_requirements_by_tutor_version(info, private_requirements_path)
 
@@ -83,7 +90,19 @@ def _enable_private_requirements_before_quince(
             file.write("")
 
     echo_command = f'echo "-e ./{info["name"]}/" >> {private_requirements_txt}'
-    subprocess.call(echo_command, shell=True)
+
+    process = subprocess.run(
+        echo_command,
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
+    )
+
+    click.echo(process.stdout)
+
+    if process.stderr:
+        click.echo(process.stderr)
 
 
 def _enable_private_requirements_latest(
@@ -96,14 +115,22 @@ def _enable_private_requirements_latest(
         info (Dict[str, str]): A dictionary containing metadata about the requirement. Expected to have a "name" key.
         private_requirements_path (str): The root directory where private requirements are stored.
     """
-    subprocess.call(
+    process = subprocess.run(
         [
             "tutor",
             "mounts",
             "add",
             f'{private_requirements_path}/{info["name"]}',
-        ]
+        ],
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+        text=True,
     )
+
+    click.echo(process.stdout)
+
+    if process.stderr:
+        click.echo(process.stderr)
 
 
 def get_picasso_packages(settings: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:
