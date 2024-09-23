@@ -6,6 +6,7 @@ from typing import Any, List, Pattern
 
 import click
 from tutor import config as tutor_config
+from tutor import fmt as tutor_fmt
 
 COMMAND_CHAINING_OPERATORS = ["&&", "&", "||", "|", ";"]
 
@@ -80,6 +81,7 @@ def run_command(command: str) -> None:
     Args:
         command (str): Tutor command.
     """
+    click.echo(tutor_fmt.command(command))
     with subprocess.Popen(
         command,
         shell=True,

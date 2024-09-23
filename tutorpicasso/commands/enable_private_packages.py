@@ -6,6 +6,8 @@ import click
 from packaging.version import Version
 from tutor import config as tutor_config
 from tutor.__about__ import __version__ as tutor_version
+from tutor import utils as tutor_utils
+from tutor import fmt as tutor_fmt
 
 
 @click.command(name="enable-private-packages", help="Enable picasso private packages")
@@ -35,22 +37,13 @@ def enable_private_packages() -> None:
                 f"{package} is missing one of the required keys: 'name', 'repo', 'version'"
             )
 
-        if os.path.isdir(f'{private_requirements_path}/{info["name"]}'):
-            subprocess.call(
-                ["rm", "-rf", f'{private_requirements_path}/{info["name"]}']
-            )
+        requirement_path = f'{private_requirements_path}/{info["name"]}'
+        if os.path.isdir(requirement_path):
+            tutor_utils.execute("rm", "-rf", requirement_path)
 
-        process = subprocess.run(
-            ["git", "clone", "-b", info["version"], info["repo"]],
-            cwd=private_requirements_path,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            text=True,
+        tutor_utils.execute(
+            "git", "clone", "-b", info["version"], info["repo"], requirement_path
         )
-
-        click.echo(process.stdout)
-        if process.stderr:
-            click.echo(process.stderr)
 
         handle_private_requirements_by_tutor_version(info, private_requirements_path)
 
@@ -90,19 +83,8 @@ def _enable_private_requirements_before_quince(
             file.write("")
 
     echo_command = f'echo "-e ./{info["name"]}/" >> {private_requirements_txt}'
-
-    process = subprocess.run(
-        echo_command,
-        shell=True,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    )
-
-    click.echo(process.stdout)
-
-    if process.stderr:
-        click.echo(process.stderr)
+    subprocess.call(echo_command, shell=True)
+    click.echo(tutor_fmt.command(echo_command))
 
 
 def _enable_private_requirements_latest(
@@ -115,22 +97,9 @@ def _enable_private_requirements_latest(
         info (Dict[str, str]): A dictionary containing metadata about the requirement. Expected to have a "name" key.
         private_requirements_path (str): The root directory where private requirements are stored.
     """
-    process = subprocess.run(
-        [
-            "tutor",
-            "mounts",
-            "add",
-            f'{private_requirements_path}/{info["name"]}',
-        ],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
+    tutor_utils.execute(
+        "tutor", "mounts", "add", f'{private_requirements_path}/{info["name"]}'
     )
-
-    click.echo(process.stdout)
-
-    if process.stderr:
-        click.echo(process.stderr)
 
 
 def get_picasso_packages(settings: Dict[str, Any]) -> Dict[str, Dict[str, Any]]:

@@ -4,6 +4,7 @@ from typing import Any
 
 import click
 from tutor import config as tutor_config
+from tutor import utils as tutor_utils
 
 
 @click.command(name="enable-themes", help="Enable picasso themes")
@@ -43,20 +44,11 @@ def enable_themes() -> None:
 
             theme_version = theme.get("version", "")
             theme_repo = theme.get("repo", "")
-            process = subprocess.run(
-                [
-                    "git",
-                    "clone",
-                    "-b",
-                    str(theme_version),
-                    str(theme_repo),
-                    str(theme_path),
-                ],
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
-                text=True,
+            tutor_utils.execute(
+                "git",
+                "clone",
+                "-b",
+                str(theme_version),
+                str(theme_repo),
+                str(theme_path),
             )
-
-            click.echo(process.stdout)
-            if process.stderr:
-                click.echo(process.stderr)
