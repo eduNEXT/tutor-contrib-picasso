@@ -56,7 +56,7 @@ jobs:
             - tutor plugins index add https://raw.githubusercontent.com/eduNEXT/tutor-plugin-indexes/picasso_test/
             - tutor plugins install mfe mfe_extensions aspects
             - tutor plugins enable mfe mfe_extensions aspects
-            - tutor config save
+            - tutor plugins list | tutor config save
           EOF
 
       - name: Check run-extra-commands
