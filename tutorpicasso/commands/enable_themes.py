@@ -31,24 +31,23 @@ def enable_themes() -> None:
                 "Expected 'theme' to be a dictionary, but got something else."
             )
 
-        else:
-            if not {"name", "repo", "version"}.issubset(theme.keys()):
-                raise click.ClickException(
-                    f"{theme} is missing one or more required keys: "
-                    "'name', 'repo', 'version'"
-                )
-
-            theme_path = f'{tutor_root}/env/build/openedx/themes/{theme["name"]}'
-            if os.path.isdir(theme_path):
-                subprocess.call(["rm", "-rf", theme_path])
-
-            theme_version = theme.get("version", "")
-            theme_repo = theme.get("repo", "")
-            tutor_utils.execute(
-                "git",
-                "clone",
-                "-b",
-                str(theme_version),
-                str(theme_repo),
-                str(theme_path),
+        if not {"name", "repo", "version"}.issubset(theme.keys()):
+            raise click.ClickException(
+                f"{theme} is missing one or more required keys: "
+                "'name', 'repo', 'version'"
             )
+
+        theme_path = f'{tutor_root}/env/build/openedx/themes/{theme["name"]}'
+        if os.path.isdir(theme_path):
+            subprocess.call(["rm", "-rf", theme_path])
+
+        theme_version = theme.get("version", "")
+        theme_repo = theme.get("repo", "")
+        tutor_utils.execute(
+            "git",
+            "clone",
+            "-b",
+            theme_version,
+            theme_repo,
+            theme_path,
+        )
