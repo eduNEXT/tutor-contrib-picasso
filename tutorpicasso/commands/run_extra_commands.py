@@ -6,6 +6,7 @@ from typing import Any, List, Pattern
 
 import click
 from tutor import config as tutor_config
+from tutor import utils as tutor_utils
 
 COMMAND_CHAINING_OPERATORS = ["&&", "&", "||", "|", ";"]
 
@@ -80,24 +81,7 @@ def run_command(command: str) -> None:
     Args:
         command (str): Tutor command.
     """
-    with subprocess.Popen(
-        command,
-        shell=True,
-        executable="/bin/bash",
-        stdin=subprocess.PIPE,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-    ) as process:
-
-        stdout, stderr = process.communicate()
-
-        if process.returncode != 0 or "error" in stderr.lower():
-            raise click.ClickException(
-                f"Command '{command}' failed with return code {process.returncode}. Output: {stdout}. Error: {stderr}"
-            )
-
-        click.echo(stdout)
+    tutor_utils.execute("sh", "-c", command)
 
 
 def find_tutor_misspelled(command: str) -> bool:
