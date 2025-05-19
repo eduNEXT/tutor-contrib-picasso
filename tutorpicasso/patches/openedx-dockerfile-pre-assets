@@ -1,4 +1,4 @@
-{% if TUTOR_VERSION is defined and PICASSO_THEME_DIRS is defined and PICASSO_THEMES_NAME is defined %}
+{% if (TUTOR_VERSION is defined or TUTOR_BRANCH is defined) and PICASSO_THEME_DIRS is defined and PICASSO_THEMES_NAME is defined %}
 
 COPY --chown=app:app ./themes/ /openedx/themes
 # This compiles the Picasso themes assets from the redwood release.
