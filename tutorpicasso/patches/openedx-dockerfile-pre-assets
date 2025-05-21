@@ -34,7 +34,14 @@ RUN openedx-assets themes \
 # This compiles the Picasso themes assets from the redwood release.
 
 # These commands are already in the Dockerfile Tutor template,
-@@ -37,4 +15,3 @@ RUN npm run compile-sass -- \
+# but we needed them for the Picasso themes compilation.
+RUN npm run postinstall
+RUN npm run compile-sass -- --skip-themes
+RUN npm run webpack
+# Compiling the Picasso themes.
+RUN npm run compile-sass -- \
+    --theme-dir {{ PICASSO_THEME_DIRS | join(' --theme-dir ') }} \
+    --theme {{ PICASSO_THEMES_NAME | join(' --theme ') }} \
     && ./manage.py lms collectstatic --noinput --settings=tutor.assets \
     && rdfind -makesymlinks true -followsymlinks true /openedx/staticfiles/
 {% endif %}
