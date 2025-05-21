@@ -6,7 +6,7 @@ jobs:
     name: Integration with Tutor
     strategy:
       matrix:
-        tutor_version: ["<19.0.0", "<18.0.0", "<17.0.0", "<16.0.0"]
+        tutor_version: ["<19.0.0", "<18.0.0"]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -39,7 +39,7 @@ jobs:
           PICASSO_MANAGE_DPKG:
             name: eox-manage
             repo: git@github.com:eduNEXT/eox-manage.git
-            version: v5.2.0
+            version: v6.1.0
           PICASSO_THEMES:
             - name: endx-saas-themes
               repo: git@github.com:eduNEXT/ednx-saas-themes.git
