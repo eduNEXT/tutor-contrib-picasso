@@ -13,7 +13,7 @@
 COPY --chown=app:app ./themes/ /openedx/themes
 
 
-{% if TUTOR_VERSION is defined and not in valid_branches and (current_version[0] < redwood_version[0]) %}
+{% if TUTOR_VERSION is defined and TUTOR_VERSION not in valid_branches and (current_version[0] < redwood_version[0]) %}
 # This compiles the Picasso themes assets in the releases < redwood.
 
 # These commands are already in the Dockerfile Tutor template,
