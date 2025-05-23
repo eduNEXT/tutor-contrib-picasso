@@ -1,20 +1,25 @@
 {% if TUTOR_VERSION is defined and PICASSO_THEME_DIRS is defined and PICASSO_THEMES_NAME is defined %}
 
-{% set redwood_version = '18.0.0'.split('.') | map('int') | list %}
-{% set version_parts = TUTOR_VERSION.lstrip('v').split('.') %}
-{% set is_valid_version = version_parts | select('match', '^[0-9]+$') | list | length == version_parts | length %}
+{% set redwood_version = 'v18.0.0'.lstrip('v').split('.') %}
+{% set redwood_version = redwood_version | map('int') | list %}
 
-{% if is_valid_version %}
-  {% set current_version = version_parts | map('int') | list %}
-{% else %}
-  {% set current_version = [] %}
-{% endif %}
+{% set version_parts = TUTOR_VERSION.lstrip('v').split('.') %}
+{% set current_version_numbers = [] %}
+{% set is_tag_version = true %}
+
+{% for part in version_parts %}
+  {% if part.isdigit() %}
+    {% set _ = current_version_numbers.append(part | int) %}
+  {% else %}
+    {% set is_tag_version = false %}
+  {% endif %}
+{% endfor %}
 
 
 COPY --chown=app:app ./themes/ /openedx/themes
 
 
-{% if current_version and (current_version[0] < redwood_version[0]) %}
+{% if is_tag_version and (current_version_numbers[0] < redwood_version[0]) %}
 # This compiles the Picasso themes assets in the releases < redwood.
 
 # These commands are already in the Dockerfile Tutor template,
