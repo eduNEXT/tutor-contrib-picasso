@@ -2,7 +2,7 @@ import re
 import subprocess
 from itertools import chain
 
-from typing import Any, List, Pattern
+from typing import Any, List, Pattern, cast
 
 import click
 from tutor import config as tutor_config
@@ -108,8 +108,8 @@ def create_regex_from_list(special_chars: List[str]) -> Pattern[str]:
     Return:
         A new compiled regex pattern that can be used for comparisons
     """
-    escaped_special_chars = list(map(re.escape, special_chars)) # type: ignore[arg-type]
-    regex_pattern = "|".join(escaped_special_chars) # type: ignore[arg-type]
+    escaped_special_chars = cast(List[str], list(map(re.escape, special_chars)))
+    regex_pattern = "|".join(escaped_special_chars)
     return re.compile(regex_pattern)
 
 
