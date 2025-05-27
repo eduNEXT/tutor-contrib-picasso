@@ -58,6 +58,22 @@ Usage
 
 Remember to follow the procedure you need before building your images.
 
+Tutor Version
+^^^^^^^^^^^^^^
+
+The version field in each configuration entry can be either a Git tag or a branch name. However, version comparisons to determine theme compilation behavior are only performed when the value is a valid semantic version tag (e.g., v18.0.0). If a branch is specified, the plugin will assume it's based on the latest Open edX release and will apply the most recent theme compilation method accordingly, since Tutor branches typically track the latest development or release version. Make sure that the branch name you specify actually exists in the repository, otherwise the cloning process will fail.
+
+.. code-block:: yaml
+
+    TUTOR_VERSION: <the version of the tutor your installation used. e.g., v18.0.0>
+
+or
+
+.. code-block:: yaml
+
+    TUTOR_VERSION: <the branch of the tutor your installation used. e.g., zebrawood>
+
+
 Enable Private Packages
 ^^^^^^^^^^^^^^^^^^^^^^^^
 

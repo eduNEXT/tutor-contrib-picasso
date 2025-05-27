@@ -108,8 +108,8 @@ def create_regex_from_list(special_chars: List[str]) -> Pattern[str]:
     Return:
         A new compiled regex pattern that can be used for comparisons
     """
-    escaped_special_chars = list(map(re.escape, special_chars))  # type: ignore
-    regex_pattern = "|".join(escaped_special_chars)  # type: ignore
+    escaped_special_chars = [re.escape(s) for s in special_chars]
+    regex_pattern = "|".join(escaped_special_chars)
     return re.compile(regex_pattern)
 
 

@@ -1,13 +1,33 @@
 {% if TUTOR_VERSION is defined and PICASSO_THEME_DIRS is defined and PICASSO_THEMES_NAME is defined %}
+
 {% set redwood_version = 'v18.0.0'.lstrip('v').split('.') %}
-{% set current_version = TUTOR_VERSION.lstrip('v').split('.') %}
 {% set redwood_version = redwood_version | map('int') | list %}
-{% set current_version = current_version | map('int') | list %}
+
+{% set version_parts = TUTOR_VERSION.lstrip('v').split('.') %}
+{% set current_version_numbers = [] %}
+{% set is_tag_version = true %}
+
+{% for part in version_parts %}
+  {% if part.isdigit() %}
+    {% set _ = current_version_numbers.append(part | int) %}
+  {% else %}
+    {% set is_tag_version = false %}
+  {% endif %}
+{% endfor %}
+
 
 COPY --chown=app:app ./themes/ /openedx/themes
-{% if (current_version[0] < redwood_version[0]) %}
-# This compiles the Picasso themes assets in the releases < redwood.
 
+
+{# 
+  Releases < Redwood have a different way to compile the theme assets. Only use the old theme compilation method if:
+  - A valid version number was parsed (current_version_numbers is not empty)
+  - The version string is a tag (e.g., v18.0.0), not a branch name
+  - The major version is less than the Redwood release
+  Reference:
+  - https://docs.openedx.org/en/latest/site_ops/install_configure_run_guide/configuration/changing_appearance/theming/compiling_theme.html
+#}
+{% if current_version_numbers and is_tag_version and (current_version_numbers[0] < redwood_version[0]) %}
 # These commands are already in the Dockerfile Tutor template,
 # but we needed them for the Picasso themes compilation.
 ENV NO_PYTHON_UNINSTALL 1
