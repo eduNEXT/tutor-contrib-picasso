@@ -23,7 +23,7 @@ COPY --chown=app:app ./themes/ /openedx/themes
   Only use the old theme compilation method if:
   - A valid version number was parsed (current_version_numbers is not empty)
   - The version string is a tag (e.g., v18.0.0), not a branch name
-  - The major version is less than the Redwood release
+  - The major version is lower than the Redwood release
 #}
 {% if current_version_numbers and is_tag_version and (current_version_numbers[0] < redwood_version[0]) %}
 # This compiles the Picasso themes assets in the releases < redwood.
