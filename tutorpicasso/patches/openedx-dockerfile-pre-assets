@@ -24,13 +24,15 @@ COPY --chown=app:app ./themes/ /openedx/themes
   - A valid version number was parsed (current_version_numbers is not empty)
   - The version string is a tag (e.g., v18.0.0), not a branch name
   - The major version is less than the Redwood release
+  Reference:
+  - https://docs.openedx.org/en/latest/site_ops/install_configure_run_guide/configuration/changing_appearance/theming/compiling_theme.html
 #}
 {% if current_version_numbers and is_tag_version and (current_version_numbers[0] < redwood_version[0]) %}
 # These commands are already in the Dockerfile Tutor template,
 # but we needed them for the Picasso themes compilation.
 ENV NO_PYTHON_UNINSTALL 1
 ENV NO_PREREQ_INSTALL 1
-RUN openedx-assets xmodule \
+RUN openedx -assets xmodule \
     && openedx-assets npm \
     && openedx-assets webpack --env=prod \
     && openedx-assets common
