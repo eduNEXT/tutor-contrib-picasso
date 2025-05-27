@@ -20,7 +20,7 @@ COPY --chown=app:app ./themes/ /openedx/themes
 
 
 {# 
-  Only use the old theme compilation method if:
+  Releases < Redwood have a different way to compile the theme assets. Only use the old theme compilation method if:
   - A valid version number was parsed (current_version_numbers is not empty)
   - The version string is a tag (e.g., v18.0.0), not a branch name
   - The major version is less than the Redwood release
