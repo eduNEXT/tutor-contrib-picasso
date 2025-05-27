@@ -32,7 +32,7 @@ COPY --chown=app:app ./themes/ /openedx/themes
 # but we needed them for the Picasso themes compilation.
 ENV NO_PYTHON_UNINSTALL 1
 ENV NO_PREREQ_INSTALL 1
-RUN openedx -assets xmodule \
+RUN openedx-assets xmodule \
     && openedx-assets npm \
     && openedx-assets webpack --env=prod \
     && openedx-assets common
