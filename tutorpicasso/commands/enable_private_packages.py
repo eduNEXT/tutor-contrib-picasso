@@ -58,10 +58,9 @@ def handle_private_requirements_by_tutor_version(
         info (Dict[str, str]): A dictionary containing metadata about the requirement. Expected to have a "name" key.
         private_requirements_path (str): The directory path to store the private requirements.
     """
-    tutor_version_obj = Version(tutor_version)
-    quince_version_obj = Version("v17.0.0")
+    quince_version = "v17.0.0"
 
-    if tutor_version_obj < quince_version_obj:
+    if "main" not in tutor_version and Version(tutor_version) < Version(quince_version):
         private_txt_path = f"{private_requirements_path}/private.txt"
         _enable_private_requirements_before_quince(info, private_txt_path)
     else:
