@@ -5,9 +5,9 @@ from typing import Any, Dict
 import click
 from packaging.version import Version
 from tutor import config as tutor_config
-from tutor.__about__ import __version__ as tutor_version
-from tutor import utils as tutor_utils
 from tutor import fmt as tutor_fmt
+from tutor import utils as tutor_utils
+from tutor.__about__ import __version__ as tutor_version
 
 
 @click.command(name="enable-private-packages", help="Enable picasso private packages")

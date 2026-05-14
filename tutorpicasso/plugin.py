@@ -1,11 +1,12 @@
 from __future__ import annotations
 
 import os
+import re
 from glob import glob
 
 import click
 import importlib_resources
-from packaging.version import Version
+from packaging.version import InvalidVersion, Version
 from tutor import hooks
 from tutor.__about__ import __version__ as tutor_version
 
@@ -19,8 +20,6 @@ from .__about__ import __version__
 
 # Tutor introduces the MOUNTED_DIRECTORIES in the latest Palm version.
 latest_palm_version = "16.1.8"
-import re
-from packaging.version import Version, InvalidVersion
 
 
 def safe_version(v: str) -> Version:

@@ -1,7 +1,6 @@
 import re
 import subprocess
 from itertools import chain
-
 from typing import Any, List, Pattern
 
 import click
