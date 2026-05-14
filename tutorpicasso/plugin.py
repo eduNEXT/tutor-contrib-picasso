@@ -19,7 +19,32 @@ from .__about__ import __version__
 
 # Tutor introduces the MOUNTED_DIRECTORIES in the latest Palm version.
 latest_palm_version = "16.1.8"
-if Version(tutor_version) > Version(latest_palm_version):
+import re
+from packaging.version import Version, InvalidVersion
+
+
+def safe_version(v: str) -> Version:
+    """Parse a version string, tolerating non-PEP-440 suffixes like '-main', '-dev', etc.
+
+    Converts '21.0.6-main' -> '21.0.6+main' (a valid PEP 440 local version),
+    and falls back to stripping the suffix entirely if that still fails.
+    """
+    try:
+        return Version(v)
+    except InvalidVersion:
+        pass
+
+    # Replace the first '-<suffix>' with '+<suffix>' (PEP 440 local segment)
+    normalized = re.sub(r"-([A-Za-z][\w.]*)", r"+\1", v, count=1)
+    try:
+        return Version(normalized)
+    except InvalidVersion:
+        # Last resort: strip any trailing non-numeric segment
+        stripped = re.sub(r"[-+].*$", "", v)
+        return Version(stripped)
+
+
+if safe_version(tutor_version) > safe_version(latest_palm_version):
     hooks.Filters.MOUNTED_DIRECTORIES.add_items(
         [
             ("openedx", r"eox-.*"),
