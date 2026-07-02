@@ -19,7 +19,7 @@ from .__about__ import __version__
 
 # Tutor introduces the MOUNTED_DIRECTORIES in the latest Palm version.
 latest_palm_version = "16.1.8"
-if Version(tutor_version) > Version(latest_palm_version):
+if "main" in tutor_version or Version(tutor_version) > Version(latest_palm_version):
     hooks.Filters.MOUNTED_DIRECTORIES.add_items(
         [
             ("openedx", r"eox-.*"),
